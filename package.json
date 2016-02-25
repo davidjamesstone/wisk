@@ -1,0 +1,31 @@
+{
+  "name": "wisk",
+  "version": "1.0.0",
+  "description": "Watch files or directories for changes, run tasks when these changes occur. Simples.",
+  "keywords": [
+    "watch",
+    "tasks",
+    "npm scripts",
+    "build",
+    "tool",
+    "chokidar",
+    "shell"
+  ],
+  "bin": {
+    "wisk": "./bin/cmd.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard"
+  },
+  "author": "davidjamesstone",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^1.4.2",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "minimist": "^1.2.0",
+    "standard": "^6.0.7"
+  }
+}
