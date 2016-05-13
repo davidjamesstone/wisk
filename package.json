@@ -1,7 +1,7 @@
 {
   "name": "wisk",
   "version": "1.0.0",
-  "description": "Watch files or directories for changes, run tasks when these changes occur. Simples.",
+  "description": "Watch files or directories for changes, run tasks when these changes occur. Simple build tool that allows you to run shell commands when files or directories change.",
   "keywords": [
     "watch",
     "tasks",
@@ -9,6 +9,7 @@
     "build",
     "tool",
     "chokidar",
+    "spawn",
     "shell"
   ],
   "bin": {
@@ -16,16 +17,26 @@
   },
   "main": "index.js",
   "scripts": {
+    "test": "node test",
     "lint": "standard"
   },
-  "author": "davidjamesstone",
-  "license": "ISC",
   "dependencies": {
     "chokidar": "^1.4.2",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "spawn-args": "^0.1.0"
   },
   "devDependencies": {
     "minimist": "^1.2.0",
     "standard": "^6.0.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/davidjamesstone/wisk.git"
+  },
+  "bugs": {
+    "url": "http://github.com/davidjamesstone/wisk/issues",
+    "email": "davidjamesstone@gmail.com"
+  },
+  "author": "David Stone <davidjamesstone@gmail.com>",
+  "license": "MIT"
 }

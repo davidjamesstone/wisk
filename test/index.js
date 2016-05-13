@@ -1,3 +1,3 @@
-var Wisk = require('..')
+var wisk = require('..')
 var tasks = require('./tasks')
-var wisk = new Wisk(__dirname, tasks)
+wisk(tasks, __dirname)

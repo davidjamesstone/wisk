@@ -12,6 +12,6 @@ assert(file, 'No task file supplied')
 
 const cwd = argv.cwd || process.cwd()
 const items = require(path.resolve(cwd, file))
-const Wisk = require('../')
+const wisk = require('../')
 
-Wisk(cwd, items)
+wisk(items, cwd)

@@ -1,66 +1,72 @@
 'use strict'
 
-const assert = require('assert')
+const spawnargs = require('spawn-args')
 const chokidar = require('chokidar')
 const extend = require('util')._extend
 const spawn = require('child_process').spawn
 const log = console.log
 const logError = console.error
 
-function Wisk (cwd, items) {
-  assert(Array.isArray(items), 'Expected arguments `items` to be an array')
+function wisk (items, cwd) {
+  if (!Array.isArray(items)) {
+    items = [items]
+  }
 
+  let watchers = []
+
+  // Default cwd to process.cwd
   cwd = cwd || process.cwd()
 
-  items.forEach((item, index) => {
-    var watch = item.watch
-    const tasks = item.tasks
+  const spawnOptions = {
+    cwd: cwd,
+    stdio: 'inherit'
+  }
 
-    watch.options = extend({
+  // Iterate over passed items
+  items.forEach((item, index) => {
+    // Set up watch options with defaults
+    const watchOptions = extend({
       cwd: cwd,
       ignoreInitial: true
-    }, watch.options)
+    }, item.options)
 
-    for (let i = 0; i < tasks.length; i++) {
-      if (typeof tasks[i].command === 'string') {
-        tasks[i].options = extend({
-          cwd: cwd,
-          stdio: 'inherit'
-        }, tasks[i].options)
-      }
-    }
+    // Set up chokidar watcher
+    log('Setting up watcher %d', index, item.paths)
+    const watcher = chokidar.watch(item.paths, watchOptions)
 
-    log(`Setting up watcher ${index}:`, watch.paths)
-    const watcher = chokidar.watch(watch.paths, watch.options)
-
-    watcher.on('all', (event, path, stat) => {
-      log(`Event ${event} on item ${path}`, stat || '')
+    for (let key in item.on) {
+      log('Setting up watcher event listeners: `%s`', key)
+      let tasks = item.on[key]
 
       for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i]
 
-        if (typeof task.command === 'function') {
-          log(`Executing task function ${task.command.name}`, task.args)
+        // get task args
+        let args = spawnargs(task)
 
-          try {
-            task.command.apply(task.options, task.args)
-            log(`Executed task function ${task.command.name}`)
-          } catch (e) {
-            logError(`Error executing task function ${task.command.name}`, e)
-          }
-        } else if (typeof task.command === 'string') {
-          log(`Spawning task command '${task.command}'`, task.args)
+        // Set up handler to and
+        log('Setting up watcher task: `%s`', task)
 
-          const proc = spawn(task.command, task.args, task.options)
-          log(`Spawned task command '${task.command}'`, proc.pid)
+        watcher.on(key, (event, path, stat) => {
+          log('Event `%s` on path `%s`', event, path)
+          log('Running `%s`', task)
 
+          // Spawn child process
+          const proc = spawn(args[0], args.slice(1), spawnOptions)
+          log('Spawned task `%s` (%d)', task, proc.pid)
+
+          // Log result on process exit
           proc.on('exit', (code) => {
-            (code ? logError : log)(`Spawned task '${task.command}' (${proc.pid}) exited with code ${code}`)
+            (code ? logError : log)('Spawned task `%s` (%d) exited with code %d', task, proc.pid, code)
           })
-        }
+        })
       }
-    })
+    }
+
+    watchers.push(watcher)
   })
+
+  return watchers
 }
 
-module.exports = Wisk
+module.exports = wisk
