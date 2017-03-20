@@ -2,12 +2,13 @@
 
 const spawnargs = require('spawn-args')
 const chokidar = require('chokidar')
+const debounce = require('debounce')
 const extend = require('util')._extend
 const spawn = require('child_process').spawn
 const log = console.log
 const logError = console.error
 
-function wisk (items, cwd) {
+function wisk (items, cwd, debounceMs) {
   if (!Array.isArray(items)) {
     items = [items]
   }
@@ -47,7 +48,7 @@ function wisk (items, cwd) {
         // Set up handler to and
         log('Setting up watcher task: `%s`', task)
 
-        watcher.on(key, (event, path, stat) => {
+        watcher.on(key, debounce((event, path, stat) => {
           log('Event `%s` on path `%s`', event, path)
           log('Running `%s`', task)
 
@@ -59,7 +60,7 @@ function wisk (items, cwd) {
           proc.on('exit', (code) => {
             (code ? logError : log)('Spawned task `%s` (%d) exited with code %d', task, proc.pid, code)
           })
-        })
+        }, debounceMs))
       }
     }
 

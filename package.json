@@ -1,6 +1,6 @@
 {
   "name": "wisk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Watch files or directories for changes, run tasks when these changes occur. Simple build tool that allows you to run shell commands when files or directories change.",
   "keywords": [
     "watch",
@@ -10,7 +10,8 @@
     "tool",
     "chokidar",
     "spawn",
-    "shell"
+    "shell",
+    "debounce"
   ],
   "bin": {
     "wisk": "./bin/cmd.js"
@@ -21,13 +22,13 @@
     "lint": "standard"
   },
   "dependencies": {
-    "chokidar": "^1.4.2",
-    "minimist": "^1.2.0",
-    "spawn-args": "^0.1.0"
+    "chokidar": "1.6.1",
+    "debounce": "1.0.0",
+    "minimist": "1.2.0",
+    "spawn-args": "0.2.0"
   },
   "devDependencies": {
-    "minimist": "^1.2.0",
-    "standard": "^6.0.7"
+    "standard": "9.0.2"
   },
   "repository": {
     "type": "git",
